@@ -1,0 +1,52 @@
+[
+  {
+    "id": "model-a",
+    "name": "Modelo A",
+    "description": "Modelo de previsão desenvolvido pelo Grupo 1.",
+    "groupName": "Grupo 1",
+    "algorithm": "Linear Regression",
+    "version": "1.0",
+    "active": true,
+    "createdAt": "2026-08-01T00:00:00Z"
+  },
+  {
+    "id": "model-b",
+    "name": "Modelo B",
+    "description": "Modelo de previsão desenvolvido pelo Grupo 2.",
+    "groupName": "Grupo 2",
+    "algorithm": "Random Forest",
+    "version": "1.0",
+    "active": true,
+    "createdAt": "2026-08-01T00:00:00Z"
+  },
+  {
+    "id": "model-c",
+    "name": "Modelo C",
+    "description": "Modelo de previsão desenvolvido pelo Grupo 3.",
+    "groupName": "Grupo 3",
+    "algorithm": "Decision Tree",
+    "version": "1.0",
+    "active": true,
+    "createdAt": "2026-08-01T00:00:00Z"
+  },
+  {
+    "id": "model-d",
+    "name": "Modelo D",
+    "description": "Modelo de previsão desenvolvido pelo Grupo 4.",
+    "groupName": "Grupo 4",
+    "algorithm": "Gradient Boosting",
+    "version": "1.0",
+    "active": true,
+    "createdAt": "2026-08-01T00:00:00Z"
+  },
+  {
+    "id": "model-inactive",
+    "name": "Modelo inativo",
+    "description": "Modelo desativado. Não deve ser oferecido ao aplicativo por padrão.",
+    "groupName": "Reservado",
+    "algorithm": "None",
+    "version": "0.0",
+    "active": false,
+    "createdAt": "2026-08-01T00:00:00Z"
+  }
+]
