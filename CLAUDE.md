@@ -53,7 +53,7 @@ python scripts/generate_mock_predictions.py
 ## Comandos
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 pytest
 uvicorn app.main:app --reload
 ```

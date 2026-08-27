@@ -6,25 +6,20 @@ Você **não** precisa conhecer RIPE Atlas, modelo preditivo, arquivos CSV ou a 
 
 A API devolve JSON. Datas estão em ISO-8601 UTC, com sufixo `Z`. Exemplo: `2026-08-20T19:00:00Z`.
 
+Código-fonte: [github.com/LiniiS/connectivity-forecast-api](https://github.com/LiniiS/connectivity-forecast-api)
+
 ## Base URL
 
-Local:
+Use uma variável no app (por exemplo `EXPO_PUBLIC_API_BASE_URL`). Não use `localhost` no celular físico.
 
-```text
-http://127.0.0.1:8000
-```
+| Ambiente | URL |
+| --- | --- |
+| Local | `http://127.0.0.1:8000` |
+| Produção (Render) | `https://<seu-servico>.onrender.com` (confira no dashboard após o deploy) |
 
-Produção (substitua pelo endereço publicado no Render):
+Swagger: `{BASE_URL}/docs`
 
-```text
-https://<seu-servico>.onrender.com
-```
-
-Swagger (interface clicável):
-
-```text
-{BASE_URL}/docs
-```
+No plano Free do Render o serviço hiberna. A **primeira** chamada pode levar 30–60 segundos. Trate timeout e uma mensagem do tipo “conectando ao servidor”.
 
 Todos os endpoints usam o prefixo `/api/v1`.
 
@@ -32,7 +27,7 @@ Nesta versão **não há autenticação**.
 
 ---
 
-## Choosing a prediction model
+## Como escolher o modelo de previsão
 
 Vários grupos produzem previsões. O aplicativo **escolhe um modelo** e pede só as previsões daquele modelo.
 

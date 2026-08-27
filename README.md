@@ -1,6 +1,11 @@
-# Internet Quality API
+# Connectivity Forecast API
 
-API REST educacional que entrega previsões de qualidade de conexão para aplicativos mobile.
+API REST educacional de previsão de qualidade de conexão para aplicativos mobile (React Native / Expo e similares).
+
+Repositório: [github.com/LiniiS/connectivity-forecast-api](https://github.com/LiniiS/connectivity-forecast-api)  
+Licença: [MIT](LICENSE)
+
+O nome interno do serviço (campo `service` em `GET /api/v1/health`) continua `internet-quality-api`. Isso não muda o contrato REST.
 
 Ela existe para **desacoplar** duas disciplinas:
 
@@ -43,7 +48,7 @@ Quando houver saídas reais, aponte `PREDICTIONS_FILE` para `data/predictions.cs
 
 As categorias `GOOD` / `MODERATE` / `UNSTABLE` são **regras de negócio experimentais do projeto**. Não são classificações fornecidas pelo RIPE Atlas.
 
-Os identificadores, coordenadas e ASNs do dataset inicial são **mockados**. O que é real nesta versão é o **schema e o significado dos campos**, não os valores de teste.
+Os identificadores, coordenadas e ASNs do dataset inicial são **ilustrativos**. Não foram consultados no RIPE Atlas. Mesmo quando um ASN se parece com um ASN real, **não** trate a linha como uma probe RIPE verificada. O que é real nesta versão é o **schema e o significado dos campos**.
 
 As coordenadas públicas de probes RIPE Atlas recebem proteção de privacidade. A aplicação **não** deve afirmar que a localização da probe é a localização exata do usuário.
 
@@ -61,7 +66,7 @@ As coordenadas públicas de probes RIPE Atlas recebem proteção de privacidade.
 | `GET` | `/api/v1/forecasts/nearby?lat=&lon=&model_id=` | Previsão da probe mais próxima, naquele modelo |
 | `POST` | `/api/v1/activity/check` | Adequação experimental de uma atividade |
 
-Documentação interativa: [`/docs`](http://127.0.0.1:8000/docs)
+Documentação interativa (local): [`http://127.0.0.1:8000/docs`](http://127.0.0.1:8000/docs)
 
 Guia para a disciplina mobile: [`docs/STUDENT_API_GUIDE.md`](docs/STUDENT_API_GUIDE.md)  
 Contrato para a equipe do modelo: [`docs/PREDICTION_MODEL_CONTRACT.md`](docs/PREDICTION_MODEL_CONTRACT.md)
@@ -70,21 +75,27 @@ Contrato para a equipe do modelo: [`docs/PREDICTION_MODEL_CONTRACT.md`](docs/PRE
 
 Requisito: Python 3.12.
 
+```bash
+git clone https://github.com/LiniiS/connectivity-forecast-api.git
+cd connectivity-forecast-api
+```
+
 ### Windows (PowerShell)
 
-O PowerShell do Windows costuma bloquear `Activate.ps1`. Libere scripts **só nesta janela** e ative a venv:
+O PowerShell do Windows costuma bloquear `Activate.ps1`. Libere scripts **só nesta janela**:
 
 ```powershell
+python -m venv .venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 uvicorn app.main:app --reload
 ```
 
 Se `python` não for reconhecido, use o executável da venv (não precisa ativar):
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
 ```
 
@@ -93,11 +104,19 @@ Se `python` não for reconhecido, use o executável da venv (não precisa ativar
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 uvicorn app.main:app --reload
 ```
 
 A API sobe em `http://127.0.0.1:8000`. A raiz redireciona para `/docs`.
+
+Produção (só runtime, sem pytest):
+
+```bash
+pip install -r requirements.txt
+```
+
+Variáveis opcionais: copie [`.env.example`](.env.example) para `.env`.
 
 ### Variáveis de ambiente
 
@@ -120,8 +139,11 @@ Nenhuma rota precisa mudar.
 ## Testes
 
 ```bash
+pip install -r requirements-dev.txt
 pytest
 ```
+
+Há um workflow GitHub Actions (`.github/workflows/tests.yml`) que roda `pytest` em push e pull request no `main`.
 
 ## Swagger
 
@@ -139,18 +161,19 @@ No schema, cada campo relevante indica a origem:
 
 ## Deploy no Render
 
-A API está pronta para um **Web Service** Python.
+O código já está neste repositório GitHub. Crie um **Web Service** Python apontando para `LiniiS/connectivity-forecast-api`, branch `main`.
 
-1. Publique este repositório no GitHub.
-2. No [Render](https://render.com), crie um **Web Service** apontando para o repositório.
-3. Runtime: Python.
-4. **Build Command:**
+Há um `render.yaml` na raiz (Blueprint). O nome do serviço no Render é `connectivity-forecast-api`.
+
+1. No [Render](https://render.com), conecte o repositório.
+2. Runtime: Python.
+3. **Build Command:**
 
    ```text
    pip install -r requirements.txt
    ```
 
-5. **Start Command:**
+4. **Start Command:**
 
    ```text
    uvicorn app.main:app --host 0.0.0.0 --port $PORT
@@ -158,8 +181,8 @@ A API está pronta para um **Web Service** Python.
 
    O `$PORT` é obrigatório. O Render injeta essa variável.
 
-6. Health check path: `/api/v1/health`
-7. Variáveis de ambiente recomendadas:
+5. Health check path: `/api/v1/health`
+6. Variáveis de ambiente recomendadas:
 
    | Key | Value |
    | --- | --- |
@@ -167,8 +190,6 @@ A API está pronta para um **Web Service** Python.
    | `PREDICTIONS_FILE` | `data/mock_predictions.csv` |
    | `MODELS_FILE` | `data/models.json` |
    | `ALLOWED_ORIGINS` | `*` (ou as origens dos apps dos estudantes, separadas por vírgula) |
-
-Também existe um `render.yaml` na raiz, que pode ser usado como Blueprint.
 
 Esta versão **não** usa SQLite, PostgreSQL nem qualquer banco. A fonte de dados é um CSV somente leitura.
 
@@ -178,7 +199,9 @@ Após o deploy, o Swagger fica em:
 https://<seu-servico>.onrender.com/docs
 ```
 
-## Multiple Prediction Models
+No plano **Free**, o serviço hiberna. A primeira chamada depois do idle pode levar 30–60 segundos. Apps mobile devem usar timeout maior nessa primeira request e tratar “servidor acordando”.
+
+## Múltiplos modelos preditivos
 
 Vários grupos entregam previsões no **mesmo contrato**. A API só armazena, identifica, filtra, compara e expõe. Nenhum algoritmo é executado aqui.
 
@@ -288,11 +311,11 @@ Os limiares estão em `app/config/quality_rules.py` e `app/config/activity_rules
 
 ## Dataset mockado
 
-O arquivo `data/mock_predictions.csv` contém 4 modelos ativos × 10 probes × 24 horários (**960 linhas**). As combinações `probe_id` + `prediction_for` são as mesmas para todos os modelos; só os valores previstos mudam. `data/models.json` lista esses modelos (e um modelo inativo de catálogo).
+O arquivo `data/mock_predictions.csv` contém 4 modelos ativos × 10 probes × 24 horários (**960 linhas**). As combinações `probe_id` + `prediction_for` são as mesmas para todos os modelos; só os valores previstos mudam.
 
-Essas probes **não** são probes RIPE Atlas reais. IDs, ASNs, `measurement_id` e coordenadas são inventados para desenvolvimento. Os nomes de algoritmo no catálogo são metadata fictícia.
+`data/models.json` lista os quatro modelos ativos e também `model-inactive`. Essa entrada existe **somente para testes da API** (`active: false`). Ela **não** aparece em `GET /api/v1/models` e não deve ser oferecida no aplicativo.
 
-Essas probes **não** são probes RIPE Atlas reais. IDs, ASNs, `measurement_id` e coordenadas são inventados para desenvolvimento.
+Essas probes **não** são probes RIPE Atlas reais. `probe_id`, `measurement_id`, coordenadas e ASNs são inventados para desenvolvimento. Os nomes de algoritmo no catálogo são metadata fictícia.
 
 Para regenerar o CSV:
 
